@@ -1,41 +1,31 @@
-#ifndef QUEUE_H
-#define QUEUE_H
+#ifndef BOUNDED_QUEUE_H
+#define BOUNDED_QUEUE_h
 
 #include <pthread.h>
-#include <stdatomic.h>
 
-typedef struct node_t {
-    int value;
-    struct node_t* next;
-} node_t;
-
-typedef struct queue_t {
-    node_t* head;
-    node_t* tail;
-    pthread_mutex_t head_lock;
-    pthread_mutex_t tail_lock;
-    pthread_cond_t filled;
+typedef struct bounded_queue_t {
+    int* buffer;
+    int fill_ptr;
+    int use_ptr;
+    int count;
+    int size;
+    pthread_mutex_t mtx;
     pthread_cond_t emptied;
-    int max_size;
-    atomic_int size;
-} queue_t;
+    pthread_cond_t filled;
+} bounded_queue_t;
 
-typedef struct enqueuer_arg_t {
-    queue_t* q;
-    int count;
-} enqueuer_arg_t;
+// Initialize concurrent bounded queue with given maximum size
+void bounded_queue_init(bounded_queue_t* q, int max_size);
 
-typedef struct dequeuer_arg_t {
-    queue_t* q;
-    int count;
-    int* nums;
-} dequeuer_arg_t;
+// Destroy bounded queue
+void bounded_queue_destroy(bounded_queue_t* q);
 
-void queue_init(queue_t* q, int size);
-void queue_destroy(queue_t* q);
-void enqueue(queue_t* q, int value);
-int dequeue(queue_t* q);
-void* enqueuer(void* arg);
-void* dequeuer(void* arg);
+// Put value into bounded queue concurrently
+// Blocks until queue is not full
+void bounded_queue_put(bounded_queue_t* q, int value);
+
+// Pull and return value from queue concurrently
+// Blocks until queue is not empty
+int bounded_queue_get(bounded_queue_t* q);
 
 #endif
