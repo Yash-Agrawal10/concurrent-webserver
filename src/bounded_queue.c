@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <assert.h>
 
-void bounded_queue_init(bounded_queue_t* q, int max_size){
+void bounded_queue_init(queue_t* q, int max_size){
     assert(max_size > 0);
     q->buffer = malloc(sizeof(int) * max_size);
     assert(q->buffer != NULL);
@@ -17,7 +17,7 @@ void bounded_queue_init(bounded_queue_t* q, int max_size){
     pthread_cond_init(&q->filled, NULL);
 }
 
-void bounded_queue_destroy(bounded_queue_t* q){
+void bounded_queue_destroy(queue_t* q){
     free(q->buffer);
     free(q);
     pthread_mutex_destroy(&q->mtx);
@@ -25,7 +25,7 @@ void bounded_queue_destroy(bounded_queue_t* q){
     pthread_cond_destroy(&q->filled);
 }
 
-void bounded_queue_put(bounded_queue_t* q, int value){
+void bounded_queue_put(queue_t* q, int value){
     pthread_mutex_lock(&q->mtx);
     while (q->count == q->size){
         pthread_cond_wait(&q->emptied, &q->mtx);
@@ -37,7 +37,7 @@ void bounded_queue_put(bounded_queue_t* q, int value){
     pthread_mutex_unlock(&q->mtx);
 }
 
-int bounded_queue_get(bounded_queue_t* q){
+int bounded_queue_get(queue_t* q){
     pthread_mutex_lock(&q->mtx);
     while (q->count == 0){
         pthread_cond_wait(&q->filled, &q->mtx);

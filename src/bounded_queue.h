@@ -3,7 +3,7 @@
 
 #include <pthread.h>
 
-typedef struct bounded_queue_t {
+typedef struct queue_t {
     int* buffer;
     int fill_ptr;
     int use_ptr;
@@ -12,20 +12,20 @@ typedef struct bounded_queue_t {
     pthread_mutex_t mtx;
     pthread_cond_t emptied;
     pthread_cond_t filled;
-} bounded_queue_t;
+} queue_t;
 
 // Initialize concurrent bounded queue with given maximum size
-void bounded_queue_init(bounded_queue_t* q, int max_size);
+void bounded_queue_init(queue_t* q, int max_size);
 
 // Destroy bounded queue
-void bounded_queue_destroy(bounded_queue_t* q);
+void bounded_queue_destroy(queue_t* q);
 
 // Put value into bounded queue concurrently
 // Blocks until queue is not full
-void bounded_queue_put(bounded_queue_t* q, int value);
+void bounded_queue_put(queue_t* q, int value);
 
 // Pull and return value from queue concurrently
 // Blocks until queue is not empty
-int bounded_queue_get(bounded_queue_t* q);
+int bounded_queue_get(queue_t* q);
 
 #endif
