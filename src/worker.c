@@ -1,5 +1,7 @@
 #include "worker.h"
 #include "request.h"
+#include "io_helper.h"
+#include "bounded_queue.h"
 
 void* worker(void* arg){
     // Unpack arguments
@@ -8,7 +10,7 @@ void* worker(void* arg){
 
     // Run worker loop
     while (1){
-        int conn_fd = dequeue(q);
+        int conn_fd = bounded_queue_get(q);
         request_handle(conn_fd);
         close_or_die(conn_fd);
     }

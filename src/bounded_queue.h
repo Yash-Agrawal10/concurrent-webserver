@@ -1,5 +1,5 @@
 #ifndef BOUNDED_QUEUE_H
-#define BOUNDED_QUEUE_h
+#define BOUNDED_QUEUE_H
 
 #include <pthread.h>
 

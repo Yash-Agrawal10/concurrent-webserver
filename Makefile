@@ -12,9 +12,9 @@ TARGETS = $(BIN_DIR)/wserver $(BIN_DIR)/wclient $(BIN_DIR)/spin.cgi
 
 all: $(TARGETS)
 
-$(BIN_DIR)/wserver: $(OBJ_DIR)/wserver.o $(OBJ_DIR)/request.o $(OBJ_DIR)/io_helper.o
+$(BIN_DIR)/wserver: $(OBJ_DIR)/wserver.o $(OBJ_DIR)/request.o $(OBJ_DIR)/io_helper.o $(OBJ_DIR)/bounded_queue.o $(OBJ_DIR)/worker.o
 	@mkdir -p $(BIN_DIR)
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(BIN_DIR)/wclient: $(OBJ_DIR)/wclient.o $(OBJ_DIR)/io_helper.o
 	@mkdir -p $(BIN_DIR)

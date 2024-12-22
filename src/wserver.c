@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     int port = 10000;				// -p
 	int num_threads = 3;			// -t
 	int num_buffers = 5;			// -b
-	char* schedule_alg = "FIFO";	// -s
+	// char* schedule_alg = "FIFO";	// -s
     
     while ((c = getopt(argc, argv, "d:p:")) != -1)
 	switch (c) {
