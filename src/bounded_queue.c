@@ -11,7 +11,7 @@ void bounded_queue_init(queue_t* q, int max_size){
     q->count = 0;
     q->fill_ptr = 0;
     q->use_ptr = 0;
-    q->size = 0;
+    q->size = max_size;
     pthread_mutex_init(&q->mtx, NULL);
     pthread_cond_init(&q->emptied, NULL);
     pthread_cond_init(&q->filled, NULL);

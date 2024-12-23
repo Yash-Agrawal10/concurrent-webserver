@@ -19,20 +19,38 @@ int main(int argc, char *argv[]) {
     int port = 10000;				// -p
 	int num_threads = 3;			// -t
 	int num_buffers = 5;			// -b
-	// char* schedule_alg = "FIFO";	// -s
+	char* schedule_alg = "FIFO";	// -s
     
-    while ((c = getopt(argc, argv, "d:p:")) != -1)
+    while ((c = getopt(argc, argv, "d:p:t:b:s:")) != -1)
 	switch (c) {
-	case 'd':
-	    root_dir = optarg;
-	    break;
-	case 'p':
-	    port = atoi(optarg);
-	    break;
-	default:
-	    fprintf(stderr, "usage: wserver [-d basedir] [-p port]\n");
-	    exit(1);
+		case 'd':
+			root_dir = optarg;
+			break;
+		case 'p':
+			port = atoi(optarg);
+			break;
+		case 't':
+			num_threads = atoi(optarg);
+			break;
+		case 'b':
+			num_buffers = atoi(optarg);
+			break;
+		case 's':
+			if (strcmp(optarg, "FIFO") != 0 && strcmp(optarg, "SFF") != 0){
+				fprintf(stderr, "scheduling policy must either be FIFO or SFF");
+				exit(1);
+			}
+			schedule_alg = optarg;
+			break;
+		default:
+			fprintf(stderr, "./wserver [-d basedir] [-p port] [-t threads] [-b buffers] [-s schedalg]\n");
+			exit(1);
 	}
+	printf("rootdir: %s, port: %d, num_threads: %d, num_buffers: %d, schedule alg: %s\n", 
+	root_dir, port, num_threads, num_buffers, schedule_alg);
+	
+	// Resolve schedule alg error (for now)
+	(void) schedule_alg;
 
     // Change directory to root directory and start listening
     chdir_or_die(root_dir);
