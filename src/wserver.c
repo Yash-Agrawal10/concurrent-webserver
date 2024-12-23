@@ -62,7 +62,7 @@ int main(int argc, char *argv[]) {
 	if (strcmp(schedule_alg, "FIFO") == 0){
 		bounded_queue_init(q, num_buffers, 0);
 	}
-	else if (strcp(schedule_alg, "SFF") == 0){
+	else if (strcmp(schedule_alg, "SFF") == 0){
 		bounded_queue_init(q, num_buffers, 1);
 	}
 	else{
@@ -82,9 +82,12 @@ int main(int argc, char *argv[]) {
 		struct sockaddr_in client_addr;
 		int client_len = sizeof(client_addr);
 		int conn_fd = accept_or_die(listen_fd, (sockaddr_t *) &client_addr, (socklen_t *) &client_len);
-		bounded_queue_put(q, conn_fd);
+		int metadata = 0;
+		// Resolve information about path
+		// Valid, size (if sorted), ec.
+		
+		bounded_queue_put(q, conn_fd, metadata);
     }
-
     return 0;
 }
 

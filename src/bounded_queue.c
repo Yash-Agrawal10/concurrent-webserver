@@ -4,6 +4,7 @@
 #include <pthread.h>
 #include <assert.h>
 #include <sys/stat.h>
+#include <stdio.h>
 
 void bounded_queue_init(queue_t* q, int max_size, int sorted){
     assert(max_size > 0);
@@ -34,15 +35,14 @@ void bounded_queue_destroy(queue_t* q){
     pthread_cond_destroy(&q->filled);
 }
 
-void bounded_queue_put(queue_t* q, int value){
+void bounded_queue_put(queue_t* q, int value, long long metadata){
     pthread_mutex_lock(&q->mtx);
     while (q->count == q->size){
         pthread_cond_wait(&q->emptied, &q->mtx);
     }
 
     q->buffer[q->fill_ptr] = value;
-    long long meta = get_metadata(value);
-    q->buffer_meta[q->fill_ptr] = meta;
+    q->buffer_meta[q->fill_ptr] = metadata;
 
     if (q->sorted){
         int curr_index = q->fill_ptr;
@@ -54,7 +54,7 @@ void bounded_queue_put(queue_t* q, int value){
                 q->buffer[curr_index] = temp;
                 long long temp_meta = q->buffer_meta[test_index];
                 q->buffer_meta[test_index] = q->buffer_meta[curr_index];
-                q->buffer_meta[curr_index] = temp;
+                q->buffer_meta[curr_index] = temp_meta;
                 break;
             }
         }
@@ -78,12 +78,4 @@ int bounded_queue_get(queue_t* q){
     pthread_cond_signal(&q->emptied);
     pthread_mutex_unlock(&q->mtx);
     return value;
-}
-
-long long get_metadata(int fd){
-    struct stat file_stat;
-    int rc = fstat(fd, &file_stat);
-    assert(rc != -1);
-    long long file_size = file_stat.st_size;
-    return file_size;
 }

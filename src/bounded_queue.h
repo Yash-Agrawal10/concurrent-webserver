@@ -27,12 +27,10 @@ void bounded_queue_destroy(queue_t* q);
 
 // Put value into bounded queue concurrently
 // Blocks until queue is not full
-void bounded_queue_put(queue_t* q, int value);
+void bounded_queue_put(queue_t* q, int value, long long metadata);
 
 // Pull and return value from queue concurrently
 // Blocks until queue is not empty
 int bounded_queue_get(queue_t* q);
-
-long long get_metadata(int fd);
 
 #endif
