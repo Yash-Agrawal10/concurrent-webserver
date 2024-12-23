@@ -1,6 +1,0 @@
-{
-  "files.associations": {
-    "io_helper.h": "c",
-    "bounded_queue.h": "c"
-  }
-}
