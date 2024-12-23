@@ -59,7 +59,16 @@ int main(int argc, char *argv[]) {
 	// Set up bounded queue
 	queue_t* q = malloc(sizeof(queue_t));
 	assert(q != NULL);
-	bounded_queue_init(q, num_buffers);
+	if (strcmp(schedule_alg, "FIFO") == 0){
+		bounded_queue_init(q, num_buffers, 0);
+	}
+	else if (strcp(schedule_alg, "SFF") == 0){
+		bounded_queue_init(q, num_buffers, 1);
+	}
+	else{
+		fprintf(stderr, "Internal Error");
+		exit(1);
+	}
 
 	// Create worker threads
 	pthread_t threads[num_threads];
